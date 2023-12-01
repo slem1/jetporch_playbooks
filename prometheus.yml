@@ -1,0 +1,69 @@
+- name: prometheus
+  groups: 
+    - all
+
+  sudo: root
+
+  tasks:
+
+  - !user
+    name: create user prometheus
+    user: prometheus    
+    system: true
+    create_home: false
+
+  - !stat
+    name: check if prometheus has already be downloaded
+    path: /tmp/prometheus-2.48.0.linux-amd64.tar.gz
+    save: stat_prometheus
+
+  - !shell
+    name: download prometheus
+    cmd: "curl -L -O --output-dir /tmp https://github.com/prometheus/prometheus/releases/download/v2.48.0/prometheus-2.48.0.linux-amd64.tar.gz"    
+    changed_when: false  
+    with:
+      condition: (eq stat_prometheus.exists false) 
+  
+  - !shell
+    name: unarchive prometheus
+    cmd: "tar -xzf /tmp/prometheus-2.48.0.linux-amd64.tar.gz --directory /opt/"
+  
+  - !directory
+    name: set owner on install dir
+    path: /opt/prometheus-2.48.0.linux-amd64
+    attributes:
+      owner: prometheus
+      group: prometheus
+    recurse: true      
+
+  - !directory
+    name: create prometheus data dir
+    path: /var/prometheus/data
+    attributes:
+      owner: prometheus
+      group: prometheus
+      mode: 0o770
+
+  - !template
+    name: add prometheus config
+    src: prometheus-config.yml
+    dest: /opt/prometheus-2.48.0.linux-amd64/prometheus.yml
+    attributes:
+      owner: prometheus
+      group: prometheus
+      mode: 0o600
+  
+  - !template
+    name: add systemd service file
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service
+    attributes:
+      owner: root
+      group: root
+      mode: 0o644
+
+  - !sd_service
+    name: start prometheus
+    service: prometheus
+    started: true
+    enabled: true
