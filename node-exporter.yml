@@ -1,0 +1,56 @@
+- name: node_exporter
+  groups: 
+    - all
+
+  sudo: root
+
+  tasks:
+
+  - !stat
+    name: check if node exporter has already be downloaded
+    path: /tmp/node_exporter-1.7.0.linux-amd64.tar.gz
+    save: stat_node_exporter
+
+  - !shell
+    name: download node_exporter
+    cmd: "curl -L -O --output-dir /tmp https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz"    
+    changed_when: false  
+    with:
+      condition: (eq stat_node_exporter.exists false) 
+  
+  - !shell
+    name: unarchive node_exporter
+    cmd: "tar -xzf /tmp/node_exporter-1.7.0.linux-amd64.tar.gz --directory /opt/"
+
+  - !directory
+    name: set owner on install dir
+    path: /opt/node_exporter-1.7.0.linux-amd64
+    attributes:
+      owner: prometheus
+      group: prometheus
+    recurse: true
+    
+  - !template
+    name: add systemd service file
+    src: node-exporter.service
+    dest: /etc/systemd/system/node-exporter.service
+    attributes:
+      owner: root
+      group: root
+      mode: 0o644
+    and:
+      notify: reload systemd
+
+  - !sd_service
+    name: start node-exporter
+    service: node-exporter
+    started: true
+    enabled: true
+  
+  handlers:
+
+  - !shell
+    name: reload systemd
+    cmd: systemctl daemon-reload
+    with:
+      subscribe: reload systemd

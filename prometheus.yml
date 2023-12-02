@@ -61,9 +61,19 @@
       owner: root
       group: root
       mode: 0o644
+    and:
+      notify: reload systemd
 
   - !sd_service
     name: start prometheus
     service: prometheus
     started: true
     enabled: true
+
+  handlers:
+
+  - !shell
+    name: reload systemd
+    cmd: systemctl daemon-reload
+    with:
+      subscribe: reload systemd 
