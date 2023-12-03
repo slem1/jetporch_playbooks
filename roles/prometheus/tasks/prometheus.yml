@@ -1,0 +1,61 @@
+
+- !user
+  name: create user prometheus
+  user: prometheus    
+  system: true
+  create_home: false
+
+- !stat
+  name: check if prometheus has already be downloaded
+  path: /tmp/{{ prometheus_archive_file }}
+  save: stat_prometheus
+
+- !shell
+  name: download prometheus
+  cmd: "curl -L -O --output-dir /tmp {{ prometheus_url }}"    
+  changed_when: false  
+  with:
+    condition: (eq stat_prometheus.exists false) 
+
+- !shell
+  name: unarchive prometheus
+  cmd: "tar -xzf /tmp/{{ prometheus_archive_file }} --directory /opt/"
+
+- !directory
+  name: set owner on install dir
+  path: /opt/{{ prometheus_install }}
+  attributes:
+    owner: prometheus
+    group: prometheus
+  recurse: true      
+- !directory
+  name: create prometheus data dir
+  path: /var/prometheus/data
+  attributes:
+    owner: prometheus
+    group: prometheus
+    mode: 0o770
+- !template
+  name: add prometheus config
+  src: prometheus-config.yml
+  dest: /opt/{{ prometheus_install }}/prometheus.yml
+  attributes:
+    owner: prometheus
+    group: prometheus
+    mode: 0o600
+
+- !template
+  name: add systemd service file
+  src: prometheus.service
+  dest: /etc/systemd/system/prometheus.service
+  attributes:
+    owner: root
+    group: root
+    mode: 0o644
+  and:
+    notify: reload systemd
+- !sd_service
+  name: start prometheus
+  service: prometheus
+  started: true
+  enabled: true

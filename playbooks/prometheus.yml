@@ -1,0 +1,9 @@
+
+- name: prometheus playbook
+  groups:
+    - all
+
+  sudo: root 
+  
+  roles:
+    - { role: prometheus, tags: ['prometheus'] }  

@@ -1,0 +1,7 @@
+# handlers file for redis role
+
+- !shell
+  name: reload systemd
+  cmd: systemctl daemon-reload
+  with:
+    subscribe: reload systemd 
