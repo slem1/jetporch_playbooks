@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 User=prometheus
 Group=prometheus
-ExecStart=/opt/node_exporter-1.7.0.linux-amd64/node_exporter
+ExecStart=/opt/{{ node-exporter_install }}/node_exporter
 
 [Install]
 WantedBy=multi-user.target

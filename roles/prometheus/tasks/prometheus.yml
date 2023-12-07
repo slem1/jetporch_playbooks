@@ -27,7 +27,8 @@
   attributes:
     owner: prometheus
     group: prometheus
-  recurse: true      
+  recurse: true
+
 - !directory
   name: create prometheus data dir
   path: /var/prometheus/data
@@ -35,6 +36,7 @@
     owner: prometheus
     group: prometheus
     mode: 0o770
+
 - !template
   name: add prometheus config
   src: prometheus-config.yml
@@ -42,18 +44,27 @@
   attributes:
     owner: prometheus
     group: prometheus
-    mode: 0o600
+    mode: 0o664
 
 - !template
   name: add systemd service file
   src: prometheus.service
-  dest: /etc/systemd/system/prometheus.service
+  dest: /lib/systemd/system/prometheus.service
   attributes:
     owner: root
     group: root
     mode: 0o644
   and:
     notify: reload systemd
+
+- !directory
+  name: create scrapers config dir
+  path: /opt/{{ prometheus_install }}/scrapes
+  attributes:
+    owner: prometheus
+    group: prometheus
+    mode: 0o774
+
 - !sd_service
   name: start prometheus
   service: prometheus

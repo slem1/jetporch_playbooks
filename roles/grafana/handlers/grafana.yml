@@ -1,6 +1,5 @@
-
 - !shell
   name: reload systemd
   cmd: systemctl daemon-reload
   with:
-    subscribe: reload systemd 
+    subscribe: reload systemd

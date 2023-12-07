@@ -1,0 +1,12 @@
+
+- !shell
+  name: reload systemd
+  cmd: systemctl daemon-reload
+  with:
+    subscribe: reload systemd
+
+- !shell
+  name: reload prometheus config
+  cmd: kill -1 $(systemctl show --property MainPID --value prometheus)
+  with:
+    subscribe: reload prometheus config

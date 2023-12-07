@@ -1,0 +1,46 @@
+- !user
+  name: create user grafana
+  user: grafana
+  system: true
+  create_home: false
+
+- !stat
+  name: check if grafana has already be downloaded
+  path: /tmp/{{ grafana_install }}.tar.gz
+  save: stat_grafana
+
+- !shell
+  name: download node_exporter
+  cmd: "curl -L -O --output-dir /tmp {{ grafana_url }}"
+  changed_when: false
+  with:
+    condition: (eq stat_grafana.exists false)
+
+- !shell
+  name: unarchive node_exporter
+  cmd: "tar -xzf /tmp/{{ grafana_install }}.tar.gz --directory /opt/"
+
+- !directory
+  name: set owner on install dir
+  path: /opt/{{ grafana_install }}
+  attributes:
+    owner: grafana
+    group: grafana
+  recurse: true
+
+- !template
+  name: add systemd service file
+  src: grafana.service
+  dest: /etc/systemd/system/grafana.service
+  attributes:
+    owner: root
+    group: root
+    mode: 0o644
+  and:
+    notify: reload systemd
+
+- !sd_service
+  name: start grafana
+  service: grafana
+  started: true
+  enabled: true

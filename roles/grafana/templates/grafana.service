@@ -1,0 +1,11 @@
+[Unit]
+Description=Grafana
+After=network-online.target
+
+[Service]
+User=grafana
+Group=grafana
+ExecStart=/opt/{{ grafana_install }}/bin/grafana server
+
+[Install]
+WantedBy=multi-user.target

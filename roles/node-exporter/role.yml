@@ -1,0 +1,17 @@
+# role definition file for redis role
+
+name: node-exporter
+
+defaults:
+   default_scrape_interval: 1s
+   prometheus_install: prometheus-2.48.0.linux-amd64
+   node-exporter_install: node_exporter-1.7.0.linux-amd64
+   node-exporter_url: https://github.com/prometheus/node_exporter/releases/download/v1.7.0/node_exporter-1.7.0.linux-amd64.tar.gz
+
+tasks:
+  - node-exporter.yml
+
+handlers:
+  - node-exporter.yml
+
+
