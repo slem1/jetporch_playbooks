@@ -6,19 +6,19 @@
 
 - !stat
   name: check if grafana has already be downloaded
-  path: /tmp/{{ grafana_install }}.tar.gz
+  path: "{{ tmp_dir }}/{{ grafana_install }}.linux-amd64.tar.gz"
   save: stat_grafana
 
 - !shell
-  name: download node_exporter
-  cmd: "curl -L -O --output-dir /tmp {{ grafana_url }}"
+  name: download grafana
+  cmd: "curl -L -O --output-dir {{ tmp_dir }} {{ grafana_url }}"
   changed_when: false
   with:
     condition: (eq stat_grafana.exists false)
 
 - !shell
-  name: unarchive node_exporter
-  cmd: "tar -xzf /tmp/{{ grafana_install }}.tar.gz --directory /opt/"
+  name: unarchive grafana
+  cmd: "tar -xzf /{{ tmp_dir }}/{{ grafana_install }}.linux-amd64.tar.gz --directory /opt/"
 
 - !directory
   name: set owner on install dir
@@ -37,7 +37,7 @@
     group: root
     mode: 0o644
   and:
-    notify: reload systemd
+    notify: restart grafana
 
 - !sd_service
   name: start grafana

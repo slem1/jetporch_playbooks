@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 User=grafana
 Group=grafana
-ExecStart=/opt/{{ grafana_install }}/bin/grafana server
+ExecStart=/opt/{{ grafana_install }}/bin/grafana server --homepath /opt/{{ grafana_install }}
 
 [Install]
 WantedBy=multi-user.target

@@ -3,3 +3,10 @@
   cmd: systemctl daemon-reload
   with:
     subscribe: reload systemd
+
+- !sd_service
+  name: restart grafana
+  service: grafana
+  restart: true
+  with:
+    subscribe: restart grafana

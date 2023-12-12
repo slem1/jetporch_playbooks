@@ -7,19 +7,19 @@
 
 - !stat
   name: check if prometheus has already be downloaded
-  path: /tmp/{{ prometheus_archive_file }}
+  path: "{{ tmp_dir }}/{{ prometheus_archive_file }}"
   save: stat_prometheus
 
 - !shell
   name: download prometheus
-  cmd: "curl -L -O --output-dir /tmp {{ prometheus_url }}"    
+  cmd: "curl -L -O --output-dir /{{ tmp_dir }} {{ prometheus_url }}"    
   changed_when: false  
   with:
     condition: (eq stat_prometheus.exists false) 
 
 - !shell
   name: unarchive prometheus
-  cmd: "tar -xzf /tmp/{{ prometheus_archive_file }} --directory /opt/"
+  cmd: "tar -xzf /{{ tmp_dir }}/{{ prometheus_archive_file }} --directory /opt/"
 
 - !directory
   name: set owner on install dir

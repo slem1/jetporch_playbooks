@@ -2,7 +2,8 @@
 name: grafana
 
 defaults:
-  grafana_install: grafana-10.0.0.linux-amd64
+  tmp_dir: /tmp_user
+  grafana_install: grafana-10.0.0
   grafana_url: https://dl.grafana.com/oss/release/grafana-10.0.0.linux-amd64.tar.gz
 
 tasks:

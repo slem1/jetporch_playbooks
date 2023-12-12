@@ -1,18 +1,18 @@
 - !stat
   name: check if node exporter has already be downloaded
-  path: /tmp/{{ node-exporter_install }}.tar.gz
+  path: "{{ tmp_dir }}/{{ node-exporter_install }}.tar.gz"
   save: stat_node_exporter
 
 - !shell
   name: download node_exporter
-  cmd: "curl -L -O --output-dir /tmp {{ node-exporter_url }}"
+  cmd: "curl -L -O --output-dir /{{ tmp_dir }} {{ node-exporter_url }}"
   changed_when: false
   with:
     condition: (eq stat_node_exporter.exists false)
 
 - !shell
   name: unarchive node_exporter
-  cmd: "tar -xzf /tmp/{{ node-exporter_install }}.tar.gz --directory /opt/"
+  cmd: "tar -xzf /{{ tmp_dir }}/{{ node-exporter_install }}.tar.gz --directory /opt/"
 
 - !directory
   name: set owner on install dir

@@ -2,7 +2,8 @@
 
 name: prometheus
 
-defaults:   
+defaults:
+   tmp_dir: /tmp_user
    prometheus_archive_file: prometheus-2.48.0.linux-amd64.tar.gz
    prometheus_install: prometheus-2.48.0.linux-amd64
    prometheus_url: https://github.com/prometheus/prometheus/releases/download/v2.48.0/prometheus-2.48.0.linux-amd64.tar.gz
