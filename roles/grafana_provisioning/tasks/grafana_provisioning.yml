@@ -1,0 +1,11 @@
+---
+- !copy
+  name: Copy prometheus datasource file
+  src: prometheus.yaml
+  dest: /opt/grafana-10.0.0/conf/provisioning/datasources/prometheus.yaml
+  attributes:
+    owner: grafana
+    group: grafana
+    mode: 0o644
+  and:
+    notify: restart grafana

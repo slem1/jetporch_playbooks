@@ -7,3 +7,6 @@
 
 ## Grafana
 ```jetp local --playbook playbooks/grafana.yml --roles ./roles/```
+
+## Grafana provisioning
+```jetp local --playbook playbooks/grafana_provisioning.yml --roles ./roles/```

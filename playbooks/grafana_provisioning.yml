@@ -1,0 +1,8 @@
+---
+- name: grafana provisioning playbook
+  groups:
+    - all
+
+  sudo: root
+  roles:
+    - {role: grafana_provisioning, tags: ['grafana']}

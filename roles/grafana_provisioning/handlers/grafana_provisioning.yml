@@ -1,0 +1,6 @@
+- !sd_service
+  name: restart grafana
+  service: grafana
+  restart: true
+  with:
+    subscribe: restart grafana

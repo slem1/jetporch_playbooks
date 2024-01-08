@@ -1,0 +1,10 @@
+---
+name: grafana_provisioning
+
+defaults:
+
+tasks:
+  - grafana_provisioning.yml
+
+handlers:
+  - grafana_provisioning.yml
