@@ -1,3 +1,4 @@
+---
 - name: node-exporter playbook
   groups:
     - all
@@ -5,4 +6,4 @@
   sudo: root
 
   roles:
-    - { role: node-exporter, tags: ['node-exporter'] }
+    - {role: node-exporter, tags: ['node-exporter']}

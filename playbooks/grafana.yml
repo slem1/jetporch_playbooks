@@ -1,9 +1,9 @@
-
+---
 - name: grafana playbook
   groups:
     - all
 
-  sudo: root 
-  
+  sudo: root
+
   roles:
-    - { role: grafana, tags: ['grafana'] }
+    - {role: grafana, tags: ['grafana']}

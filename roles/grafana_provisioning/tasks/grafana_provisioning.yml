@@ -1,0 +1,37 @@
+---
+- !copy
+  name: Copy prometheus datasource file
+  src: prometheus.yaml
+  dest: /opt/grafana-10.0.0/conf/provisioning/datasources/prometheus.yaml
+  attributes:
+    owner: grafana
+    group: grafana
+    mode: 0o644
+  and:
+    notify: restart grafana
+
+- !directory
+  name: create gafana dashboards dir
+  path: /var/lib/grafana/dashboards
+  attributes:
+    owner: grafana
+    group: grafana
+    mode: 0o775
+
+- !copy
+  name: Copy grafana dashboards file
+  src: system.json
+  dest: /var/lib/grafana/dashboards/system.json
+  attributes:
+    owner: grafana
+    group: grafana
+    mode: 0o644
+
+- !copy
+  name: Add provisioning config
+  src: dashboards.yaml
+  dest: /opt/grafana-10.0.0/conf/provisioning/dashboards/dashboards.yaml
+  attributes:
+    owner: grafana
+    group: grafana
+    mode: 0o644
