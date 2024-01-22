@@ -14,5 +14,3 @@ tasks:
 
 handlers:
   - node-exporter.yml
-
-
