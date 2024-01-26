@@ -1,0 +1,20 @@
+---
+- name: create user prometheus
+  ansible.builtin.user:
+    name: prometheus    
+    group: prometheus
+    system: true
+    create_home: false
+
+- name: check if prometheus has already be downloaded
+  ansible.builtin.stat:
+    path: "{{ tmp_dir }}/{{ prometheus_archive_file }}"
+  register: stat_prometheus
+
+- name: download prometheus
+  ansible.builtin.unarchive:
+    src:  "{{ prometheus_url }}"
+    dest: "/opt"
+    owner: prometheus
+    group: prometheus
+    remote_src: true
