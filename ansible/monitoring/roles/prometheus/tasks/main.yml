@@ -6,15 +6,59 @@
     system: true
     create_home: false
 
-- name: check if prometheus has already be downloaded
-  ansible.builtin.stat:
-    path: "{{ tmp_dir }}/{{ prometheus_archive_file }}"
-  register: stat_prometheus
+- name: create tmp_appli directory
+  ansible.builtin.file:
+    path: "{{ tmp_appli_dir }}"
+    state: directory
+    mode: '0744'
 
 - name: download prometheus
+  ansible.builtin.get_url:
+    url:  "{{ prometheus_url }}"
+    dest: "{{ tmp_appli_dir }}/prometheus.tar.gz"
+    owner: prometheus
+    group: prometheus
+    mode: '0644'    
+    checksum: sha256:7f31c5d6474bbff3e514e627e0b7a7fbbd4e5cea3f315fd0b76cad50be4c1ba3
+    
+- name: install prometheus
   ansible.builtin.unarchive:
-    src:  "{{ prometheus_url }}"
+    src:  "{{ tmp_appli_dir }}/prometheus.tar.gz"
     dest: "/opt"
     owner: prometheus
     group: prometheus
     remote_src: true
+
+- name: create prometheus data dir
+  ansible.builtin.file:
+    path: /var/prometheus/data
+    state: directory  
+    owner: prometheus
+    group: prometheus
+    mode: '0770'
+
+
+- name: add prometheus config
+  ansible.builtin.template:
+    src: prometheus-config.yml
+    dest: /opt/{{ prometheus_install }}/prometheus.yml    
+    owner: prometheus
+    group: prometheus
+    mode: 0o664
+
+- name: create scrapers config dir
+  ansible.builtin.file:
+    path: /opt/{{ prometheus_install }}/scrapes
+    state: directory
+    owner: prometheus
+    group: prometheus
+    mode: 0o774
+
+- name: add systemd service file
+  ansible.builtin.template:
+    src: prometheus.service
+    dest: /etc/systemd/system/prometheus.service    
+    owner: root
+    group: root
+    mode: 0o644
+  notify: Reload systemd
